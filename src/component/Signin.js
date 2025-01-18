@@ -33,7 +33,9 @@ export default function Signin() {
                 if (response.status === 200) {
                     localStorage.setItem('token',response.data.token )
                     localStorage.setItem('role',response.data.role )
-                    navigate("/")
+                    localStorage.setItem('name',response.data.name )
+
+                    navigate("/dashboard")
                 }
 
             } catch (error) {

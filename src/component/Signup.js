@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 export default function Signup() {
 
-            const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const [name, setName] = useState('')
     const [username, setUsername] = useState('')
