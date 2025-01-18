@@ -1,15 +1,48 @@
 import React, { useState } from 'react'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Signin() {
 
+    const navigate = useNavigate()
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [emailError, setEmailError] = useState('');
 
-    const signin = (e) => {
+    const validateEmail = (email) => {
+        // Check if email contains @gmail.com
+        const regex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+        if (!regex.test(email)) {
+            setEmailError('Please use a valid @gmail.com email address');
+        } else {
+            setEmailError('');
+        }
+    };
+
+    const signin = async (e) => {
         e.preventDefault(e)
-        console.log("username", username)
-        console.log("password", password)
+        if (!emailError) {
+            const data = {
+                userName: username,
+                passWord: password,
+
+            }
+            try {
+                const response = await axios.post("http://localhost:3000/signin", data)
+                if (response.status === 200) {
+                    localStorage.setItem('token',response.data.token )
+                    localStorage.setItem('role',response.data.role )
+                    navigate("/")
+                }
+
+            } catch (error) {
+                alert(error.response.data.message);
+
+            }
+        }
     }
+
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -26,7 +59,11 @@ export default function Signin() {
                         <div className="mt-2">
                             <input
                                 value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                onChange={(e) => {
+                                    setUsername(e.target.value)
+                                    validateEmail(e.target.value);
+
+                                }}
                                 id="email"
                                 name="email"
                                 type="email"
@@ -35,6 +72,11 @@ export default function Signin() {
                                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             />
                         </div>
+                        {emailError && (
+                            <div className="mt-2 text-sm text-red-500">
+                                {emailError}
+                            </div>
+                        )}
                     </div>
                     <div>
                         <div className="flex items-center justify-between">

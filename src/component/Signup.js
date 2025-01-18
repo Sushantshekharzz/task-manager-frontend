@@ -1,7 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 export default function Signup() {
+
+            const navigate = useNavigate()
 
     const [name, setName] = useState('')
     const [username, setUsername] = useState('')
@@ -9,6 +13,7 @@ export default function Signup() {
     const [passwordStrengthMessage, setPasswordStrengthMessage] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState()
     const [emailError, setEmailError] = useState('');
+
 
     const calculatePasswordStrength = (password) => {
         const strength = password.length;
@@ -49,14 +54,27 @@ export default function Signup() {
         }
     };
 
-    const signup = (e) => {
+    const signup = async (e) => {
         e.preventDefault(e)
         if (isPasswordValid && !emailError) {
-            console.log("username", username)
-            console.log("password", password)
-            console.log("name", name)
+            const data = {
+                userName: username,
+                passWord: password,
+                role: 'Admin',
+                name: name
+
+            }
+            try {
+                const response = await axios.post("http://localhost:3000/users", data)
+                if (response.status === 200) {
+                    navigate("/")
+                }
+            } catch (error) {
+                alert(error.response.data.message);
+            }
         }
     }
+
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
