@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loader from './Loader';
+import Alert from './Alert';
 export default function Signin() {
 
     const navigate = useNavigate()
@@ -9,8 +10,12 @@ export default function Signin() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [emailError, setEmailError] = useState('');
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');  // To store the error message
+    const [alert, setAlert] = useState('')
+    const [alertMessage, setAlertMessage] = useState('');
+    const [statusCode, setStatuscode] = useState();
+
 
 
     const validateEmail = (email) => {
@@ -35,14 +40,22 @@ export default function Signin() {
                 setLoading(true)
                 const response = await axios.post("http://localhost:3000/signin", data)
                 if (response.status === 200) {
-                    localStorage.setItem('token',response.data.token )
-                    localStorage.setItem('role',response.data.role )
-                    localStorage.setItem('name',response.data.name )
+                    setPassword('')
+                    setUsername('')
+                    localStorage.setItem('token', response.data.token)
+                    localStorage.setItem('role', response.data.role)
+                    localStorage.setItem('name', response.data.name)
                     navigate("/dashboard")
+                    setAlertMessage(response.data.message)
+                    setAlert(true)
+                    setStatuscode(response.status)
+
                 }
             } catch (error) {
 
-                setErrorMessage(error.response ? error.response.data.message : 'Something went wrong!');
+                setStatuscode(error.response.status)
+                setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
+                setAlert(true)
             }
             finally {
                 setLoading(false);
@@ -57,6 +70,8 @@ export default function Signin() {
                     <Loader />
                 </div>
             )}
+            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} {/* Pass setAlert to allow dismiss */}
+
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                     Sign in to your account
@@ -130,7 +145,7 @@ export default function Signin() {
                         Sign up
                     </a>
                 </p>
-            </div>         
+            </div>
         </div>
     )
 }

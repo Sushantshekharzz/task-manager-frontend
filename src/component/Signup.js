@@ -3,6 +3,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import Loader from './Loader';
+import Alert from './Alert';
 
 export default function Signup() {
 
@@ -15,7 +16,11 @@ export default function Signup() {
     const [isPasswordValid, setIsPasswordValid] = useState()
     const [emailError, setEmailError] = useState('');
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');  // To store the error message
+    const [alert, setAlert] = useState('')
+    const [alertMessage, setAlertMessage] = useState('');
+    const [statusCode, setStatuscode] = useState();
+
+
 
 
 
@@ -70,13 +75,22 @@ export default function Signup() {
             }
             try {
                 setLoading(true)
-                const response = await axios.post("http://localhost:3000/users", data)
+                const response = await axios.post("http://localhost:3000/signup", data)
                 if (response.status === 200) {
+                    setPassword('')
+                    setUsername('')
+                    setName('')
                     navigate("/")
+                    setAlertMessage(response.data.message)
+                    setAlert(true)
+                    setStatuscode(response.status)
+
                 }
             } catch (error) {
 
-                setErrorMessage(error.response ? error.response.data.message : 'Something went wrong!');
+                setStatuscode(error.response.status)
+                setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
+                setAlert(true)
             }
             finally {
                 setLoading(false);
@@ -91,6 +105,8 @@ export default function Signup() {
                     <Loader />
                 </div>
             )}
+            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} {/* Pass setAlert to allow dismiss */}
+
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                     Sign up for a new account
@@ -183,12 +199,6 @@ export default function Signup() {
                         </button>
                     </div>
                 </form>
-                {errorMessage && (
-                    <div className="mt-4 text-center text-sm text-red-500">
-                        {errorMessage}
-                    </div>
-                )}
-
                 <p className="mt-10 text-center text-sm/6 text-gray-500">
                     Already a member?{' '}
                     <a href="/" className="font-semibold text-indigo-600 hover:text-indigo-500">
