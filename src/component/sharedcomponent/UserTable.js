@@ -78,27 +78,27 @@ export default function UserTable({ refreshUsers }) {
     }
 
     return (
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 ">
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-800 z-50">
                     <Loader />
                 </div>
             )}
             {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} 
-            <table className="table-auto w-full border-collapse border border-gray-200">
+            <table className="table-auto w-full border-collapse border border-gray-200 ">
                 <thead>
-                    <tr className="bg-gray-100">
-                        <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">User Name</th>
-                        <th className="border border-gray-300 px-4 py-2 text-left">Update</th>
+                    <tr className="bg-gray-800 ">
+                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Name</th>
+                        <th className="border border-gray-300 px-4 py-2 text-center text-white">User Name</th>
+                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Update</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((user, index) => (
                         <tr key={index}>
-                            <td className="border border-gray-300 px-4 py-2">{user.name}</td>
-                            <td className="border border-gray-300 px-4 py-2">{user.userName}</td>
-                            <td className="border border-gray-300 px-4 py-2">
+                            <td className="border border-gray-300  text-center px-4 py-2">{user.name}</td>
+                            <td className="border border-gray-300 text-center px-4 py-2">{user.userName}</td>
+                            <td className="border border-gray-300 text-center px-4 py-2">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <div>
                                         <button onClick={() => toggleEdit(user.id)}>

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import Alert from '../sharedcomponent/Alert'
 import Loader from '../sharedcomponent/Loader'
-import { postUser } from '../util/api'
 import { getUser } from '../util/api'
 import { updateUser } from '../util/api'
 
