@@ -9,15 +9,13 @@ export default function Navbar({ name }) {
     const [toggleIcon, setToggleIcon] = useState(false)
     const [toggleMenu, setToggleMenu] = useState(false);
 
-
+    const nameDisplay = name.toUpperCase()
     const firstLetter = name.charAt(0).toUpperCase();
 
     const handleSignOut = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
-
         navigate('/');
-
     }
 
     const toggleIconFunc = () => {
@@ -33,7 +31,7 @@ export default function Navbar({ name }) {
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                         <button type="button" className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu"
                             aria-expanded={toggleMenu ? 'true' : 'false'}
-                            onClick={toggleMenuFunc} // Toggle mobile menu on button click
+                            onClick={toggleMenuFunc} 
                         >
                             <span className="absolute -inset-0.5"></span>
                             <span className="sr-only">Open main menu</span>
@@ -53,23 +51,23 @@ export default function Navbar({ name }) {
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
                                 <NavLink
-                                    to="/dashboard"
+                                    to="/Task"
                                     className={({ isActive }) =>
                                         `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                                         }`
                                     }
                                     aria-current="page"
                                 >
-                                    Dashboard
+                                    Task
                                 </NavLink>
                                 <NavLink
-                                    to="/teams"
+                                    to="/user"
                                     className={({ isActive }) =>
                                         `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                                         }`
                                     }
                                 >
-                                    Team
+                                    User
                                 </NavLink>
                             </div>
                         </div>
@@ -97,8 +95,12 @@ export default function Navbar({ name }) {
                                 </button>
                             </div>
                             {toggleIcon &&
+
                                 <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabIndex="-1">
-                                    <a className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2"
+                                    <div className="px-4 py-2 text-sm text-gray-700" style={{ textAlign: 'center' }}>
+                                        <strong>{nameDisplay}</strong>
+                                    </div>
+                                    <a href className="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabIndex="-1" id="user-menu-item-2"
                                         onClick={handleSignOut}
                                         style={{ cursor: 'pointer' }}
                                     >Sign out</a>
@@ -112,20 +114,20 @@ export default function Navbar({ name }) {
                 className={`sm:hidden ${toggleMenu ? 'block' : 'hidden'}`} id="mobile-menu">
                 <div className="space-y-1 px-2 pb-3 pt-2">
                     <NavLink
-                        to="/dashboard"
+                        to="/Task"
                         className={({ isActive }) =>
                             `block rounded-md   px-3 py-2 text-base font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                             }`}
                     >
-                        Dashboard
+                        Task
                     </NavLink>
                     <NavLink
-                        to="/teams"
+                        to="/user"
                         className={({ isActive }) =>
                             `block rounded-md  px-3 py-2  text-base font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                             }`}
                     >
-                        Team
+                        User
                     </NavLink>
                 </div>
             </div>

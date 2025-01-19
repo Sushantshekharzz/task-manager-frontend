@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Signin from './component/Signin';
-import Signup from './component/Signup';
-import Dashboard from './component/Dashboard';
-import ProtectedRoute from './component/ProtectedRoute';
-import NotFound from './component/NotFound';
-import Unauthorized from './component/Unauthorized';
-import Teams from './component/Teams';
+import Signin from './component/pages/Signin';
+import Signup from './component/pages/Signup';
+import ProtectedRoute from "./component/sharedcomponent/ProtectedRoute"
+import Notfound from './component/sharedcomponent/NotFound';
+import Unauthorized from './component/sharedcomponent/Unauthorized';
+import User from './component/pages/User';
+import Task from './component/pages/Task';
 
 function App() {
   return (
@@ -14,10 +14,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<ProtectedRoute role='Admin' element={<Dashboard/>} />} />
-        <Route path="/teams" element={<ProtectedRoute role='Admin' element={<Teams/>} />} />
+        <Route path="/task" element={<ProtectedRoute role='Admin' element={<Task/>} />} />
+        <Route path="/user" element={<ProtectedRoute role='Admin' element={<User/>} />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Notfound />} />
       </Routes>
     </Router>
   );

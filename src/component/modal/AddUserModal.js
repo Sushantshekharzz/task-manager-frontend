@@ -1,10 +1,10 @@
 import React from 'react'
 import { useState } from 'react'
-import axios from 'axios'
-import { Navigate, useNavigate } from 'react-router-dom'
-import Loader from './Loader'
-import Alert from './Alert'
-export default function AddUserModal({ toggleModal, userModal }) {
+import Alert from '../sharedcomponent/Alert'
+import Loader from '../sharedcomponent/Loader'
+import { postUser } from '../util/api'
+
+export default function AddUserModal({ toggleModal, userModal, handleUserAdded }) {
 
     const [name, setName] = useState('')
     const [username, setUsername] = useState('')
@@ -57,7 +57,7 @@ export default function AddUserModal({ toggleModal, userModal }) {
         e.preventDefault()
         if (isPasswordValid && !emailError) {
             const data = {
-                userName: username,
+                userName: username.toLocaleLowerCase(),
                 passWord: password,
                 role: 'User',
                 name: name
@@ -65,25 +65,21 @@ export default function AddUserModal({ toggleModal, userModal }) {
 
             const token  = localStorage.getItem('token')
             const headers  = {
-                'Authorization': `$BearerToken ${token}`
+                'Authorization': `$Bearer ${token}`
             }
             try {
                 setLoading(true)
-                const response = await axios.post("http://localhost:3000/user", data, {headers})
+                const response =await postUser(data,headers)
                 if (response.status === 200) {
-                    console.log("response.status",response.status)
-                    console.log("response.data.message",response.data.message)
                     setPassword('')
                     setUsername('')
                     setName('')
                     setAlertMessage(response.data.message)
                     setAlert(true)
                     setStatuscode(response.status)
+                    handleUserAdded()
                 }
             } catch (error) {
-                console.log("response.status",error.response.status)
-                console.log("response.data.message",error.response)
-
                 setStatuscode(error.response.status)
                 setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
                 setAlert(true)

@@ -1,56 +1,20 @@
-import React from 'react'
-import { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import Loader from './Loader';
-import Alert from './Alert';
-
-export default function Signup() {
+import Loader from '../sharedcomponent/Loader';
+import Alert from '../sharedcomponent/Alert';
+import { signIn } from '../util/api';
+export default function Signin() {
 
     const navigate = useNavigate()
 
-    const [name, setName] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [passwordStrengthMessage, setPasswordStrengthMessage] = useState('');
-    const [isPasswordValid, setIsPasswordValid] = useState()
     const [emailError, setEmailError] = useState('');
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState('')
     const [alertMessage, setAlertMessage] = useState('');
     const [statusCode, setStatuscode] = useState();
 
-
-
-
-
-    const calculatePasswordStrength = (password) => {
-        const strength = password.length;
-
-        // Add additional checks for password strength
-        if (strength >= 8 && /[A-Z]/.test(password) && /\d/.test(password)) {
-            setPasswordStrengthMessage('Strong password');
-            setIsPasswordValid(true)
-        } else if (strength >= 6) {
-            setPasswordStrengthMessage('Medium password');
-            setIsPasswordValid(false)
-        } else {
-            setPasswordStrengthMessage('Weak password');
-            setIsPasswordValid(false)
-        }
-    };
-
-    // Function to apply colors based on password strength
-    const getPasswordStrengthColor = () => {
-        if (passwordStrengthMessage === 'Strong password') {
-            return 'text-green-500';
-        } else if (passwordStrengthMessage === 'Medium password') {
-            return 'text-yellow-500';
-        } else if (passwordStrengthMessage === 'Weak password') {
-            return 'text-red-500';
-        }
-        return '';
-    };
 
 
     const validateEmail = (email) => {
@@ -63,34 +27,36 @@ export default function Signup() {
         }
     };
 
-    const signup = async (e) => {
+    const signin = async (e) => {
         e.preventDefault()
-        if (isPasswordValid && !emailError) {
+        if (!emailError) {
             const data = {
-                userName: username,
+                userName: username.toLowerCase(),
                 passWord: password,
-                role: 'Admin',
-                name: name
 
             }
             try {
                 setLoading(true)
-                const response = await axios.post("http://localhost:3000/signup", data)
+                const response = await signIn(data)
                 if (response.status === 200) {
+                    setAlert(true)
                     setPassword('')
                     setUsername('')
-                    setName('')
-                    navigate("/")
+                    localStorage.setItem('token', response.data.token)
+                    localStorage.setItem('role', response.data.role)
+                    localStorage.setItem('name', response.data.name)
                     setAlertMessage(response.data.message)
-                    setAlert(true)
                     setStatuscode(response.status)
+                    navigate("/Task");
+
+
 
                 }
             } catch (error) {
+                setAlert(true)
 
                 setStatuscode(error.response.status)
                 setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
-                setAlert(true)
             }
             finally {
                 setLoading(false);
@@ -109,27 +75,11 @@ export default function Signup() {
 
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                    Sign up for a new account
+                    Sign in to your account
                 </h2>
             </div>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form onSubmit={signup} className="space-y-6">
-                    <div>
-                        <label htmlFor="name" className="block text-sm/6 font-medium text-gray-900">
-                            Full Name
-                        </label>
-                        <div className="mt-2">
-                            <input
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                id="name"
-                                name="name"
-                                type="text"
-                                required
-                                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                            />
-                        </div>
-                    </div>
+                <form onSubmit={signin} className="space-y-6">
                     <div>
                         <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
                             Email address
@@ -140,8 +90,8 @@ export default function Signup() {
                                 onChange={(e) => {
                                     setUsername(e.target.value)
                                     validateEmail(e.target.value);
-                                }
-                                }
+
+                                }}
                                 id="email"
                                 name="email"
                                 type="email"
@@ -161,16 +111,11 @@ export default function Signup() {
                             <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
                                 Password
                             </label>
-
                         </div>
                         <div className="mt-2">
                             <input
                                 value={password}
-                                onChange={(e) => {
-                                    const newPassword = e.target.value;
-                                    setPassword(newPassword);
-                                    calculatePasswordStrength(newPassword);
-                                }}
+                                onChange={(e) => setPassword(e.target.value)}
                                 id="password"
                                 name="password"
                                 type="password"
@@ -179,30 +124,22 @@ export default function Signup() {
                                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                             />
                         </div>
-                        {password && (
-                            <div className={`mt-2 text-sm ${getPasswordStrengthColor()}`}>
-                                {passwordStrengthMessage}
-                            </div>
-                        )}
                     </div>
-                    {!isPasswordValid && password && (
-                        <div className="text-sm text-gray-500 mt-2" style={{ color: 'red' }}>
-                            Password must be at least 8 characters long, contain at least one uppercase letter, and one number.
-                        </div>
-                    )}
                     <div>
                         <button
                             type="submit"
                             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Sign up
+                            Sign in
                         </button>
                     </div>
                 </form>
+
+
                 <p className="mt-10 text-center text-sm/6 text-gray-500">
-                    Already a member?{' '}
-                    <a href="/" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                        Sign in
+                    Not a member?{' '}
+                    <a href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                        Sign up
                     </a>
                 </p>
             </div>
