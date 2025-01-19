@@ -1,7 +1,8 @@
 import React from 'react'
 import { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import Loader from './Loader';
 
 export default function Signup() {
 
@@ -13,6 +14,9 @@ export default function Signup() {
     const [passwordStrengthMessage, setPasswordStrengthMessage] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState()
     const [emailError, setEmailError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');  // To store the error message
+
 
 
     const calculatePasswordStrength = (password) => {
@@ -55,7 +59,7 @@ export default function Signup() {
     };
 
     const signup = async (e) => {
-        e.preventDefault(e)
+        e.preventDefault()
         if (isPasswordValid && !emailError) {
             const data = {
                 userName: username,
@@ -65,18 +69,28 @@ export default function Signup() {
 
             }
             try {
+                setLoading(true)
                 const response = await axios.post("http://localhost:3000/users", data)
                 if (response.status === 200) {
                     navigate("/")
                 }
             } catch (error) {
-                alert(error.response.data.message);
+
+                setErrorMessage(error.response ? error.response.data.message : 'Something went wrong!');
+            }
+            finally {
+                setLoading(false);
             }
         }
     }
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-800 z-50">
+                    <Loader />
+                </div>
+            )}
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                     Sign up for a new account
@@ -169,6 +183,11 @@ export default function Signup() {
                         </button>
                     </div>
                 </form>
+                {errorMessage && (
+                    <div className="mt-4 text-center text-sm text-red-500">
+                        {errorMessage}
+                    </div>
+                )}
 
                 <p className="mt-10 text-center text-sm/6 text-gray-500">
                     Already a member?{' '}
