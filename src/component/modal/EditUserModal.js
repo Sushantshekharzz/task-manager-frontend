@@ -24,33 +24,34 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
         }
     };
 
-    const fetchUserData = async () => {
-        const token = localStorage.getItem('token')
-        const headers = {
-            'Authorization': `$Bearer ${token}`
-        }
-        try {
-            setLoading(true)
-            const response = await getUser(selectedUserId, headers)
-
-            if (response.status === 200) {
-                setName(response.data[0].name)
-                setUsername(response.data[0].userName)
-                }
-
-
-        } catch (error) {
-            console.log(error)
-        }
-        finally {
-            setLoading(false);
-        }
-    }
+    
 
 
     useEffect(() => {
+        const fetchUserData = async () => {
+            const token = localStorage.getItem('token')
+            const headers = {
+                'Authorization': `$Bearer ${token}`
+            }
+            try {
+                setLoading(true)
+                const response = await getUser(selectedUserId, headers)
+    
+                if (response.status === 200) {
+                    setName(response.data[0].name)
+                    setUsername(response.data[0].userName)
+                    }
+    
+    
+            } catch (error) {
+                console.log(error)
+            }
+            finally {
+                setLoading(false);
+            }
+        }
         fetchUserData()
-    }, [])
+    }, [selectedUserId])
 
     const update = async (e) => {
         e.preventDefault()
