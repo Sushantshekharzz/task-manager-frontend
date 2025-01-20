@@ -6,11 +6,9 @@ import AddTaskModal from '../modal/AddTaskModal'
 export default function Task() {
     const name = localStorage.getItem('name')
     const [addTask, setAddTask] = useState(false);
-    const [resfresh, setRefresh] = useState(false);
 
     const addTaskToggle  = () =>{
         setAddTask((prev)=>!prev)
-        setRefresh(true)
 
     }
  

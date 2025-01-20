@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Alert from '../sharedcomponent/Alert';
 import Loader from '../sharedcomponent/Loader';
-import { postUser } from '../util/api';
 import { getAllUser } from '../util/api';
 import { postTask } from '../util/api';
 
