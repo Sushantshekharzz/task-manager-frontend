@@ -56,7 +56,7 @@ export default function Alert({ setAlert, message, statusCode }) {
               ? 'Server Error!'
               : 'Warning!'}
       </strong>
-      <p className="ml-2">{message || 'Operation completed successfully.'}</p>
+      <p className="ml-2">{message }</p>
     </div>
   );
 }

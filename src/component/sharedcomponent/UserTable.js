@@ -15,7 +15,7 @@ export default function UserTable({ refreshUsers }) {
     const [alertMessage, setAlertMessage] = useState('');
     const [statusCode, setStatuscode] = useState();
     const [editUserModal, setEditUserModal] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null); 
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
         fetchUser();
@@ -84,12 +84,15 @@ export default function UserTable({ refreshUsers }) {
                     <Loader />
                 </div>
             )}
-            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} 
+            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />}
             <table className="table-auto w-full border-collapse border border-gray-200 ">
                 <thead>
                     <tr className="bg-gray-800 ">
                         <th className="border border-gray-300 px-4 py-2 text-center text-white">Name</th>
                         <th className="border border-gray-300 px-4 py-2 text-center text-white">User Name</th>
+                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Role</th>
+                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Created At</th>
+                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Updated At</th>
                         <th className="border border-gray-300 px-4 py-2 text-center text-white">Update</th>
                     </tr>
                 </thead>
@@ -98,6 +101,13 @@ export default function UserTable({ refreshUsers }) {
                         <tr key={index}>
                             <td className="border border-gray-300  text-center px-4 py-2">{user.name}</td>
                             <td className="border border-gray-300 text-center px-4 py-2">{user.userName}</td>
+                            <td className="border border-gray-300 text-center px-4 py-2">{user.role}</td>
+                            <td className="border border-gray-300 text-center px-4 py-2">
+                                {new Date(user.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="border border-gray-300 text-center px-4 py-2">
+                                {new Date(user.updatedAt).toLocaleDateString()}
+                            </td>
                             <td className="border border-gray-300 text-center px-4 py-2">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <div>
