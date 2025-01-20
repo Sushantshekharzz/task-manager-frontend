@@ -32,8 +32,17 @@ const getUser = async (id, headers) => {
 }
 
 const updateUser = async (id, data, headers) => {
-    const response = await axios.put(`${process.env.REACT_APP_URL   }/users/${id}`, data, { headers })
+    const response = await axios.put(`${process.env.REACT_APP_URL}/users/${id}`, data, { headers })
     return response
 }
 
-export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser }
+const postTask  = async(data, headers) => {
+    const response = await axios.post(`${process.env.REACT_APP_URL}/tasks`, data, { headers })
+    return response
+}
+const getTask  = async( headers) => {
+    const response = await axios.get(`${process.env.REACT_APP_URL}/tasks`, { headers })
+    return response
+}
+
+export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask}

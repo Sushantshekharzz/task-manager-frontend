@@ -51,7 +51,7 @@ export default function Navbar({ name }) {
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
                                 <NavLink
-                                    to="/Task"
+                                    to="/task"
                                     className={({ isActive }) =>
                                         `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                                         }`
@@ -114,7 +114,7 @@ export default function Navbar({ name }) {
                 className={`sm:hidden ${toggleMenu ? 'block' : 'hidden'}`} id="mobile-menu">
                 <div className="space-y-1 px-2 pb-3 pt-2">
                     <NavLink
-                        to="/Task"
+                        to="/task"
                         className={({ isActive }) =>
                             `block rounded-md   px-3 py-2 text-base font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                             }`}

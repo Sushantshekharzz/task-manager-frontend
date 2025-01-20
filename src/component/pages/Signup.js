@@ -106,7 +106,7 @@ export default function Signup() {
                     <Loader />
                 </div>
             )}
-            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} {/* Pass setAlert to allow dismiss */}
+            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} 
 
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
