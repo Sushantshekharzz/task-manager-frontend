@@ -1,70 +1,191 @@
-# Getting Started with Create React App
+# Task Management App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A collaborative task management application that allows users to create, assign, track, and manage tasks in a team environment.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+### Admin Users
 
-### `npm start`
+- Add new team members.
+- Assign tasks to users.
+- View task progress for each user.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Non-Admin Users
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- View only their assigned tasks.
+- Update task status.
 
-### `npm test`
+## Sample Credentials
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Admin Credentials
 
-### `npm run build`
+- **Email Address**: admin@gmail.com
+- **Password**: Sushant@123
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### User Credentials
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Email**: user1@gmail.com
+  **Password**: Sushant@123
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Email**: user2@gmail.com
+  **Password**: Sushant@123
 
-### `npm run eject`
+## Frontend URL
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+[Visit the Application](<Your Frontend URL Here>)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Backend URL
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+https://task-manager-backend-7nni.onrender.com
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## API Documentation
 
-## Learn More
+### Base URL
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+https://task-manager-backend-7nni.onrender.com
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Endpoints
 
-### Code Splitting
+#### 1. Authentication
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**POST** `/auth/login`
 
-### Analyzing the Bundle Size
+- **Description**: Authenticate user and provide a token.
+- **Request Body**:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```json
+{
+  "email": "user@example.com",
+  "password": "yourpassword"
+}
+```
 
-### Making a Progressive Web App
+- **Response**:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```json
+{
+  "token": "jwt-token"
+}
+```
 
-### Advanced Configuration
+**POST** `/auth/register`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- **Description**: Register a new user.
+- **Request Body**:
 
-### Deployment
+```json
+{
+  "name": "User Name",
+  "email": "user@example.com",
+  "password": "yourpassword"
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- **Response**:
 
-### `npm run build` fails to minify
+```json
+{
+  "message": "User registered successfully."
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+#### 2. Tasks
+
+**GET** `/tasks`
+
+- **Description**: Retrieve all tasks.
+- **Headers**:
+  - `Authorization: Bearer <token>`
+- **Response**:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Task Title",
+    "description": "Task Description",
+    "priority": "High",
+    "status": "Todo"
+  }
+]
+```
+
+**POST** `/tasks`
+
+- **Description**: Create a new task.
+- **Headers**:
+  - `Authorization: Bearer <token>`
+- **Request Body**:
+
+```json
+{
+  "title": "Task Title",
+  "description": "Task Description",
+  "priority": "Medium",
+  "dueDate": "2025-01-30"
+}
+```
+
+- **Response**:
+
+```json
+{
+  "message": "Task created successfully."
+}
+```
+
+## Project Setup Instructions
+
+### Prerequisites
+
+- Node.js (v14 or later)
+- npm or yarn
+- A .env file with the following variables:
+  ```env
+  REACT_APP_API_URL=https://task-manager-backend-7nni.onrender.com
+  ```
+
+### Steps to Run Locally
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-repo.git
+   cd your-repo
+   ```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Start the development server**:
+   ```bash
+   npm start
+   ```
+4. Open `http://localhost:3000` in your browser.
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Run Tests
+
+```bash
+npm test
+```
+
+## Deployment Link
+
+[Visit the Deployed Application](<Your Frontend URL Here>)
+
+---
+
+## Additional Notes
+
+- Ensure the API server is running for the application to fetch data.
+- For any issues, please open a GitHub issue or contact the maintainer.
+
