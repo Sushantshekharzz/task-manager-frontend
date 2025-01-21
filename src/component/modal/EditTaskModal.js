@@ -85,10 +85,6 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
         }
     };
 
-
-
-
-
     const validateForm = () => {
         const newErrors = {};
         if (!taskData.title) newErrors.title = 'Title is required';
@@ -128,8 +124,6 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
             setLoading(false);
         }
     };
-
-
 
     return (
         <div>

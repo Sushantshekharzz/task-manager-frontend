@@ -10,10 +10,8 @@ export default function Task() {
 
     const addTaskToggle  = () =>{
         setAddTask((prev)=>!prev)
-
     }
  
-
     return (
         <div>
             <Navbar name={name} role={role} />

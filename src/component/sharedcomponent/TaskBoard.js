@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { getTask, updateTask, deleteTaskAPI } from '../util/api'; 
+import { getTask, updateTask, deleteTaskAPI } from '../util/api';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import EditTaskModal from '../modal/EditTaskModal';
 import SearchFilter from './SearchFilter';
 
-const Task = ({ task, index, moveTask, category, openEditModal, deleteTask , role }) => {
+const Task = ({ task, index, moveTask, category, openEditModal, deleteTask, role }) => {
   const [{ isDragging }, drag] = useDrag({
     type: 'TASK',
     item: { task, index, category },
@@ -40,47 +40,42 @@ const Task = ({ task, index, moveTask, category, openEditModal, deleteTask , rol
             {task.title}
           </p>
         </div>
-       {role==='Admin' && <div className="flex space-x-2">
+        {role === 'Admin' && <div className="flex space-x-2">
           <FaEdit
             className="cursor-pointer text-blue-500 hover:text-blue-700"
             onClick={() => openEditModal(task)}
           />
           <FaTrash
             className="cursor-pointer text-red-500 hover:text-red-700"
-            onClick={() => deleteTask(task.id, category)} 
+            onClick={() => deleteTask(task.id, category)}
           />
         </div>
-       }
+        }
       </div>
-
       <div className="mt-2">
         <strong className="text-gray-600">Description:</strong>
         <p className="text-sm text-gray-700" style={{ wordBreak: 'break-word' }}>
           {task.description}
         </p>
       </div>
-
       <div className="mt-2">
         <strong className="text-gray-600">Priority:</strong>
         <span
           style={{ wordBreak: 'break-word' }}
-          className={`text-sm font-semibold ${
-            task.priority === 'High'
+          className={`text-sm font-semibold ${task.priority === 'High'
               ? 'text-red-500'
               : task.priority === 'Medium'
-              ? 'text-yellow-500'
-              : 'text-green-500'
-          }`}
+                ? 'text-yellow-500'
+                : 'text-green-500'
+            }`}
         >
           {task.priority}
         </span>
       </div>
-
       <div className="mt-2">
         <strong className="text-gray-600">Due Date:</strong>
         <span className="text-sm text-gray-600">{formatDate(task.dueDate)}</span>
       </div>
-
       {assignedUsers && (
         <div className="mt-2">
           <strong className="text-gray-600">Assigned to:</strong>
@@ -91,7 +86,7 @@ const Task = ({ task, index, moveTask, category, openEditModal, deleteTask , rol
   );
 };
 
-const Column = ({ category, tasks, moveTask, openEditModal, deleteTask , role}) => {
+const Column = ({ category, tasks, moveTask, openEditModal, deleteTask, role }) => {
   const [, drop] = useDrop({
     accept: 'TASK',
     drop: (item) => {
@@ -142,7 +137,6 @@ const TaskBoard = ({ addTask, role }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
 
@@ -176,7 +170,7 @@ const TaskBoard = ({ addTask, role }) => {
 
   useEffect(() => {
     if (addTask !== undefined) {
-      getTaskData(); 
+      getTaskData();
     }
   }, [addTask]);
 

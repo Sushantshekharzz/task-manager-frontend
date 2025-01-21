@@ -24,9 +24,6 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
         }
     };
 
-    
-
-
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token')
