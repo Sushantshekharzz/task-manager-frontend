@@ -3,6 +3,8 @@ import Alert from '../sharedcomponent/Alert';
 import Loader from '../sharedcomponent/Loader';
 import { getAllUser } from '../util/api';
 import { postTask } from '../util/api';
+import Select from 'react-select';
+
 
 export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
     const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
         title: '',
         description: '',
         priority: 'Medium',
-        assignedUsers: '',
+        assignedUsers: [],
         dueDate: '',
         status: 'Todo'
     });
@@ -30,7 +32,7 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
             const response = await getAllUser(headers);
             if (response.status === 200) {
                 setUserData(response.data);
-                
+
             }
         } catch (error) {
             console.log(error);
@@ -44,26 +46,36 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
     }, []);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTaskData({ ...taskData, [name]: value });
-        setErrors({ ...errors, [name]: '' });  
+        const { name, value, type, selectedOptions } = e.target;
+
+        if (type !== 'select-multiple') {
+            setTaskData({ ...taskData, [name]: value });
+        }
+
+        if (type === 'select-multiple') {
+            const selectedUsers = Array.from(selectedOptions, option => option.value);
+            setTaskData({ ...taskData, [name]: selectedUsers });
+        }
+
+        setErrors({ ...errors, [name]: '' });
     };
 
     const validateForm = () => {
         const newErrors = {};
         if (!taskData.title) newErrors.title = 'Title is required';
         if (!taskData.description) newErrors.description = 'Description is required';
-        if (!taskData.assignedUsers) newErrors.assignedUsers = 'Assigned user is required';
-        if (!taskData.dueDate) newErrors.dueDate = 'Due date is required';
+        if (!taskData.assignedUsers || taskData.assignedUsers.length === 0) {
+            newErrors.assignedUsers = 'Assigned user is required';
+        } if (!taskData.dueDate) newErrors.dueDate = 'Due date is required';
         if (!taskData.priority) newErrors.priority = 'Priority is required';
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0; 
+        return Object.keys(newErrors).length === 0;
     };
 
     const AddTaskButton = async (e) => {
         e.preventDefault();
-        if (!validateForm()) return; 
+        if (!validateForm()) return;
 
         const token = localStorage.getItem('token');
         const headers = {
@@ -82,11 +94,11 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
                     title: '',
                     description: '',
                     priority: 'Medium',
-                    assignedUsers: '',
+                    assignedUsers: [],
                     dueDate: '',
                     status: 'Todo'
                 });
-                
+
             }
         } catch (error) {
             setStatusCode(error.response?.status || 500);
@@ -194,18 +206,20 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
                                     <label htmlFor="assignedUsers" className="block text-sm font-medium text-gray-700">
                                         Assigned User(s)
                                     </label>
-                                    <select
+                                    <Select
+                                        isMulti
                                         id="assignedUsers"
                                         name="assignedUsers"
-                                        value={taskData.assignedUsers}
-                                        onChange={handleChange}
+                                        options={userData && userData.map(user => ({ value: user.userName, label: user.userName }))}
+                                        value={taskData.assignedUsers.map(user => ({ value: user, label: user }))}
+                                        onChange={(selectedOptions) => {
+                                            setTaskData({
+                                                ...taskData,
+                                                assignedUsers: selectedOptions ? selectedOptions.map(option => option.value) : []
+                                            });
+                                        }}
                                         className={`mt-1 block w-full p-2 border ${errors.assignedUsers ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                    >
-                                        <option value="" disabled>Select a user</option>
-                                        {userData && userData.map((value, index) => (
-                                            <option key={index} value={value.userName}>{value.userName}</option>
-                                        ))}
-                                    </select>
+                                    />
                                     {errors.assignedUsers && <span className="text-sm text-red-500">{errors.assignedUsers}</span>}
                                 </div>
                                 <div>

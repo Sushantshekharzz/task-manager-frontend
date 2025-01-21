@@ -4,18 +4,19 @@ import Loader from '../sharedcomponent/Loader';
 import { getAllUser } from '../util/api';
 import { updateTask } from '../util/api';
 import { getTaskById } from '../util/api';
+import Select from 'react-select';
 
 export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, taskId }) {
     const [loading, setLoading] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alert, setAlert] = useState('');
     const [statusCode, setStatusCode] = useState();
-    const [userData, setUserData] = useState();
+    const [userData, setUserData] = useState([]);
     const [taskData, setTaskData] = useState({
         title: '',
         description: '',
         priority: 'Medium',
-        assignedUsers: '',
+        assignedUsers: [],
         dueDate: '',
         status: 'Todo'
     });
@@ -39,8 +40,6 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
         }
     };
 
-    
-
     useEffect(() => {
         const fetchTask = async () => {
             const token = localStorage.getItem('token');
@@ -52,11 +51,10 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
                 const response = await getTaskById(taskId, headers);
                 if (response.status === 200) {
                     const task = response.data;
-    
                     const formattedDueDate = task.dueDate
                         ? new Date(task.dueDate).toISOString().split('T')[0]
                         : '';
-    
+
                     setTaskData({
                         ...task,
                         dueDate: formattedDueDate,
@@ -68,25 +66,34 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
                 setLoading(false);
             }
         };
-    
+
         fetchUser();
         if (taskId) {
             fetchTask();
         }
     }, [taskId]);
-    
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTaskData({ ...taskData, [name]: value });
-        setErrors({ ...errors, [name]: '' });
+    const handleChange = (e, fieldName) => {
+        if (e && e.target) {
+            const { name, value } = e.target;
+            setTaskData({ ...taskData, [name]: value });
+            setErrors({ ...errors, [name]: '' });
+        } else if (e && e.map) {
+            const selectedUsers = e.map(option => option.value);
+            setTaskData({ ...taskData, assignedUsers: selectedUsers });
+            setErrors({ ...errors, [fieldName]: '' });
+        }
     };
+
+
+
+
 
     const validateForm = () => {
         const newErrors = {};
         if (!taskData.title) newErrors.title = 'Title is required';
         if (!taskData.description) newErrors.description = 'Description is required';
-        if (!taskData.assignedUsers) newErrors.assignedUsers = 'Assigned user is required';
+        if (taskData.assignedUsers.length === 0) newErrors.assignedUsers = 'At least one user must be assigned';
         if (!taskData.dueDate) newErrors.dueDate = 'Due date is required';
         if (!taskData.priority) newErrors.priority = 'Priority is required';
 
@@ -105,13 +112,13 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
 
         try {
             setLoading(true);
-            const response = await updateTask(taskId, taskData, headers); 
+            const response = await updateTask(taskId, taskData, headers);
             if (response.status === 200) {
                 setAlertMessage(response.data.message);
                 setAlert(true);
                 setStatusCode(response.status);
-                editTaskToggle(); 
-                toRefresh(); 
+                editTaskToggle();
+                toRefresh();
             }
         } catch (error) {
             setStatusCode(error.response?.status || 500);
@@ -121,6 +128,8 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
             setLoading(false);
         }
     };
+
+
 
     return (
         <div>
@@ -219,18 +228,20 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
                                     <label htmlFor="assignedUsers" className="block text-sm font-medium text-gray-700">
                                         Assigned User(s)
                                     </label>
-                                    <select
+                                    <Select
+                                        isMulti
                                         id="assignedUsers"
                                         name="assignedUsers"
-                                        value={taskData.assignedUsers}
-                                        onChange={handleChange}
+                                        options={userData && userData.map(user => ({ value: user.userName, label: user.userName }))}
+                                        value={taskData.assignedUsers.map(user => ({ value: user, label: user }))}
+                                        onChange={(selectedOptions) => {
+                                            setTaskData({
+                                                ...taskData,
+                                                assignedUsers: selectedOptions ? selectedOptions.map(option => option.value) : []
+                                            });
+                                        }}
                                         className={`mt-1 block w-full p-2 border ${errors.assignedUsers ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500`}
-                                    >
-                                        <option value="" disabled>Select a user</option>
-                                        {userData && userData.map((value, index) => (
-                                            <option key={index} value={value.userName}>{value.userName}</option>
-                                        ))}
-                                    </select>
+                                    />
                                     {errors.assignedUsers && <span className="text-sm text-red-500">{errors.assignedUsers}</span>}
                                 </div>
                                 <div>
