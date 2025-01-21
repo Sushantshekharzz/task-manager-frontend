@@ -32,7 +32,7 @@ A collaborative task management application that allows users to create, assign,
 
 ## Frontend URL
 
-[Visit the Application](<Your Frontend URL Here>)
+[Visit the Application](<task-management-app-live.netlify.app>)
 
 
 
@@ -51,8 +51,8 @@ A collaborative task management application that allows users to create, assign,
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-repo.git
-   cd your-repo
+   git clone https://github.com/Sushantshekharzz/task-manager-frontend.git
+   cd task-manager-frontend
    ```
 2. **Install dependencies**:
    ```bash
@@ -78,7 +78,7 @@ npm test
 
 ## Deployment Link
 
-[Visit the Deployed Application](<Your Frontend URL Here>)
+[Visit the Deployed Application](<task-management-app-live.netlify.app>)
 
 ---
 
