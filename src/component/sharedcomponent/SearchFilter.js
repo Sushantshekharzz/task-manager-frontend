@@ -3,7 +3,6 @@ import React from 'react';
 const SearchFilter = ({ searchQuery, setSearchQuery, priorityFilter, setPriorityFilter, statusFilter, setStatusFilter }) => {
   return (
     <div className="mb-6 flex justify-between gap-4 w-full max-w-4xl mx-auto">
-      {/* Search input */}
       <div className="flex-grow sm:w-1/3">
         <input
           type="text"
@@ -14,7 +13,6 @@ const SearchFilter = ({ searchQuery, setSearchQuery, priorityFilter, setPriority
         />
       </div>
 
-      {/* Priority filter */}
       <div className="flex-shrink-0 sm:w-1/4">
         <select
           className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -28,7 +26,6 @@ const SearchFilter = ({ searchQuery, setSearchQuery, priorityFilter, setPriority
         </select>
       </div>
 
-      {/* Status filter */}
       <div className="flex-shrink-0 sm:w-1/4">
         <select
           className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

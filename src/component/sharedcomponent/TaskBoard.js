@@ -176,11 +176,10 @@ const TaskBoard = ({ addTask, role }) => {
 
   useEffect(() => {
     if (addTask !== undefined) {
-      getTaskData(); // Refresh tasks when addTask changes
+      getTaskData(); 
     }
   }, [addTask]);
 
-  // Filtering logic
   const filteredTasks = Object.keys(tasks).reduce((acc, category) => {
     acc[category] = tasks[category].filter((task) => {
       const matchesSearch =
@@ -280,7 +279,6 @@ const TaskBoard = ({ addTask, role }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="p-6">
-        {/* Add Search and Filter Component */}
         <SearchFilter
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -291,7 +289,6 @@ const TaskBoard = ({ addTask, role }) => {
         />
 
         <div className="flex flex-col sm:flex-row sm:space-x-6 overflow-x-auto justify-center">
-          {/* Columns */}
           {['Todo', 'InProgress', 'Completed'].map((category) => (
             <Column
               key={category}
