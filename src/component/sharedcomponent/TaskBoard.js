@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { getTask } from '../util/api';
+import { getTask, updateTask, deleteTaskAPI } from '../util/api'; 
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import EditTaskModal from '../modal/EditTaskModal';
 
-// Task component that will be draggable
-const Task = ({ task, index, moveTask, category }) => {
+const Task = ({ task, index, moveTask, category, openEditModal, deleteTask }) => {
   const [{ isDragging }, drag] = useDrag({
     type: 'TASK',
     item: { task, index, category },
@@ -29,31 +30,46 @@ const Task = ({ task, index, moveTask, category }) => {
       className={`bg-white p-4 rounded-lg shadow-md cursor-move transition-opacity duration-300 ease-out ${isDragging ? 'opacity-50' : ''} w-full mb-4`}
       style={{
         border: '2px solid #ddd',
-
       }}
-
     >
-      <div className="flex items-center space-x-2">
-        <strong className="text-lg text-gray-600">Title:</strong>
-        <p className="text-xl font-semibold text-gray-800" style={{
-          wordBreak: 'break-word',
-        }}>{task.title}</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <strong className="text-lg text-gray-600">Title:</strong>
+          <p className="text-xl font-semibold text-gray-800" style={{ wordBreak: 'break-word' }}>
+            {task.title}
+          </p>
+        </div>
+        <div className="flex space-x-2">
+          <FaEdit
+            className="cursor-pointer text-blue-500 hover:text-blue-700"
+            onClick={() => openEditModal(task)}
+          />
+          <FaTrash
+            className="cursor-pointer text-red-500 hover:text-red-700"
+            onClick={() => deleteTask(task.id, category)} 
+          />
+        </div>
       </div>
 
       <div className="mt-2">
         <strong className="text-gray-600">Description:</strong>
-        <p className="text-sm text-gray-700" style={{
-          wordBreak: 'break-word', 
-        }}>{task.description}</p>
+        <p className="text-sm text-gray-700" style={{ wordBreak: 'break-word' }}>
+          {task.description}
+        </p>
       </div>
 
       <div className="mt-2">
         <strong className="text-gray-600">Priority:</strong>
         <span
-          style={{
-            wordBreak: 'break-word', 
-          }}
-          className={`text-sm font-semibold ${task.priority === 'High' ? 'text-red-500' : task.priority === 'Medium' ? 'text-yellow-500' : 'text-green-500'}`}>
+          style={{ wordBreak: 'break-word' }}
+          className={`text-sm font-semibold ${
+            task.priority === 'High'
+              ? 'text-red-500'
+              : task.priority === 'Medium'
+              ? 'text-yellow-500'
+              : 'text-green-500'
+          }`}
+        >
           {task.priority}
         </span>
       </div>
@@ -73,8 +89,7 @@ const Task = ({ task, index, moveTask, category }) => {
   );
 };
 
-// Column component for each category (To Do, In Progress, Completed)
-const Column = ({ category, tasks, moveTask }) => {
+const Column = ({ category, tasks, moveTask, openEditModal, deleteTask }) => {
   const [, drop] = useDrop({
     accept: 'TASK',
     drop: (item) => {
@@ -97,7 +112,15 @@ const Column = ({ category, tasks, moveTask }) => {
           </div>
         ) : (
           tasks.map((task, index) => (
-            <Task key={task.id} task={task} index={index} moveTask={moveTask} category={category} />
+            <Task
+              key={task.id}
+              task={task}
+              index={index}
+              moveTask={moveTask}
+              category={category}
+              openEditModal={openEditModal}
+              deleteTask={deleteTask}
+            />
           ))
         )}
       </div>
@@ -112,10 +135,13 @@ const TaskBoard = ({ addTask }) => {
     Completed: [],
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState(null);
+
   const getTaskData = async () => {
     const token = localStorage.getItem('token');
     const headers = {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     };
 
     try {
@@ -124,9 +150,9 @@ const TaskBoard = ({ addTask }) => {
         const fetchedTasks = response.data;
 
         const organizedTasks = {
-          Todo: fetchedTasks.filter(task => task.status === 'Todo'),
-          InProgress: fetchedTasks.filter(task => task.status === 'In Progress'),
-          Completed: fetchedTasks.filter(task => task.status === 'Completed'),
+          Todo: fetchedTasks.filter((task) => task.status === 'Todo'),
+          InProgress: fetchedTasks.filter((task) => task.status === 'InProgress'),
+          Completed: fetchedTasks.filter((task) => task.status === 'Completed'),
         };
 
         setTasks(organizedTasks);
@@ -137,15 +163,16 @@ const TaskBoard = ({ addTask }) => {
   };
 
   useEffect(() => {
-    getTaskData(); 
+    getTaskData();
   }, [addTask]);
 
-  const moveTask = (index, fromCategory, toCategory) => {
+  const moveTask = async (index, fromCategory, toCategory) => {
+    const originalTasks = { ...tasks };
     const fromTasks = [...tasks[fromCategory]];
     const toTasks = [...tasks[toCategory]];
 
     const [movedTask] = fromTasks.splice(index, 1);
-    movedTask.status = toCategory; 
+    movedTask.status = toCategory;
     toTasks.push(movedTask);
 
     setTasks({
@@ -153,18 +180,95 @@ const TaskBoard = ({ addTask }) => {
       [fromCategory]: fromTasks,
       [toCategory]: toTasks,
     });
+
+    try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
+      const data = {
+        status: movedTask.status,
+        assignedUsers: movedTask.assignedUsers,
+        priority: movedTask.priority,
+        dueDate: movedTask.dueDate,
+        description: movedTask.description,
+        title: movedTask.title,
+      };
+
+      const response = await updateTask(movedTask.id, data, headers);
+
+      if (response.status !== 200) {
+        setTasks(originalTasks);
+      }
+    } catch (error) {
+      console.log('Error updating task:', error);
+      setTasks(originalTasks);
+    }
+  };
+
+  const deleteTask = async (taskId, category) => {
+    const originalTasks = { ...tasks };
+    const categoryTasks = [...tasks[category]];
+
+    const updatedTasks = categoryTasks.filter((task) => task.id !== taskId);
+    setTasks({
+      ...tasks,
+      [category]: updatedTasks,
+    });
+
+    try {
+      const token = localStorage.getItem('token');
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await deleteTaskAPI(taskId, headers); 
+
+      if (response.status !== 200) {
+        setTasks(originalTasks); 
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      setTasks(originalTasks);
+    }
+  };
+
+  const openEditModal = (task) => {
+    setTaskToEdit(task);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setTaskToEdit(null);
   };
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="p-6 flex flex-col sm:flex-row sm:space-x-6 overflow-x-auto justify-center">
         {['Todo', 'InProgress', 'Completed'].map((category) => (
-          <Column key={category} category={category} tasks={tasks[category]} moveTask={moveTask} />
+          <Column
+            key={category}
+            category={category}
+            tasks={tasks[category]}
+            moveTask={moveTask}
+            openEditModal={openEditModal}
+            deleteTask={deleteTask}
+          />
         ))}
       </div>
+      {isModalOpen && (
+        <EditTaskModal
+          editTaskToggle={closeModal}
+          editTask={taskToEdit}
+          taskId={taskToEdit.id}
+          toRefresh={getTaskData}
+        />
+      )}
     </DndProvider>
   );
 };
 
 export default TaskBoard;
-

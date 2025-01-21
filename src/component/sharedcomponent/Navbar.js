@@ -9,7 +9,7 @@ export default function Navbar({ name }) {
     const [toggleIcon, setToggleIcon] = useState(false)
     const [toggleMenu, setToggleMenu] = useState(false);
 
-    const nameDisplay = name.toUpperCase()
+    const nameDisplay = name
     const firstLetter = name.charAt(0).toUpperCase();
 
     const handleSignOut = () => {

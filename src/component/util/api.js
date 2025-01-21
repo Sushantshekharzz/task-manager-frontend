@@ -44,5 +44,21 @@ const getTask  = async( headers) => {
     const response = await axios.get(`${process.env.REACT_APP_URL}/tasks`, { headers })
     return response
 }
+const updateTask  = async (id, data, headers) =>{  
+    const response = await axios.put(`${process.env.REACT_APP_URL}/tasks/${id}`,data, { headers })
+    return response
 
-export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask}
+}
+const getTaskById  = async (id, headers) =>{  
+    const response = await axios.get(`${process.env.REACT_APP_URL}/tasks/${id}`, { headers })
+    return response
+
+}
+
+const deleteTaskAPI  = async (id, headers) =>{  
+    const response = await axios.delete(`${process.env.REACT_APP_URL}/tasks/${id}`, { headers })
+    return response
+
+}
+
+export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI}
