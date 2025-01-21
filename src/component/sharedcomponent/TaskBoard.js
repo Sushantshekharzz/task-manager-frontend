@@ -5,6 +5,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { getTask, updateTask, deleteTaskAPI } from '../util/api'; 
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import EditTaskModal from '../modal/EditTaskModal';
+import SearchFilter from './SearchFilter';
 
 const Task = ({ task, index, moveTask, category, openEditModal, deleteTask , role }) => {
   const [{ isDragging }, drag] = useDrag({
@@ -130,12 +131,17 @@ const Column = ({ category, tasks, moveTask, openEditModal, deleteTask , role}) 
   );
 };
 
+
 const TaskBoard = ({ addTask, role }) => {
   const [tasks, setTasks] = useState({
     Todo: [],
     InProgress: [],
     Completed: [],
   });
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
@@ -165,15 +171,32 @@ const TaskBoard = ({ addTask, role }) => {
   };
 
   useEffect(() => {
-    // Fetch tasks when the component is mounted
     getTaskData();
-  }, []);  // Empty dependency array ensures it runs once when the component mounts
+  }, []);
 
   useEffect(() => {
     if (addTask !== undefined) {
       getTaskData(); // Refresh tasks when addTask changes
     }
-  }, [addTask]); // Re-fetch tasks if a new task is added
+  }, [addTask]);
+
+  // Filtering logic
+  const filteredTasks = Object.keys(tasks).reduce((acc, category) => {
+    acc[category] = tasks[category].filter((task) => {
+      const matchesSearch =
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.assignedUsers.join(', ').toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesPriority =
+        priorityFilter ? task.priority === priorityFilter : true;
+
+      const matchesStatus = statusFilter ? task.status === statusFilter : true;
+
+      return matchesSearch && matchesPriority && matchesStatus;
+    });
+    return acc;
+  }, {});
 
   const moveTask = async (index, fromCategory, toCategory) => {
     const originalTasks = { ...tasks };
@@ -256,19 +279,33 @@ const TaskBoard = ({ addTask, role }) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="p-6 flex flex-col sm:flex-row sm:space-x-6 overflow-x-auto justify-center">
-        {['Todo', 'InProgress', 'Completed'].map((category) => (
-          <Column
-            key={category}
-            category={category}
-            tasks={tasks[category]}
-            moveTask={moveTask}
-            openEditModal={openEditModal}
-            deleteTask={deleteTask}
-            role={role}
-          />
-        ))}
+      <div className="p-6">
+        {/* Add Search and Filter Component */}
+        <SearchFilter
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          priorityFilter={priorityFilter}
+          setPriorityFilter={setPriorityFilter}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+        />
+
+        <div className="flex flex-col sm:flex-row sm:space-x-6 overflow-x-auto justify-center">
+          {/* Columns */}
+          {['Todo', 'InProgress', 'Completed'].map((category) => (
+            <Column
+              key={category}
+              category={category}
+              tasks={filteredTasks[category]} // Use filtered tasks here
+              moveTask={moveTask}
+              openEditModal={openEditModal}
+              deleteTask={deleteTask}
+              role={role}
+            />
+          ))}
+        </div>
       </div>
+
       {isModalOpen && (
         <EditTaskModal
           editTaskToggle={closeModal}
@@ -280,5 +317,7 @@ const TaskBoard = ({ addTask, role }) => {
     </DndProvider>
   );
 };
+
+
 
 export default TaskBoard;
