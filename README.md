@@ -32,7 +32,7 @@ A collaborative task management application that allows users to create, assign,
 
 ## Frontend URL
 
-[Visit the Application](task-management-app-live.netlify.app)
+[Visit the Application](https://task-management-app-live.netlify.app)
 
 
 
@@ -78,7 +78,7 @@ npm test
 
 ## Deployment Link
 
-[Visit the Deployed Application](task-management-app-live.netlify.app)
+[Visit the Deployed Application](https://task-management-app-live.netlify.app)
 
 ---
 
