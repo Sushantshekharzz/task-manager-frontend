@@ -5,6 +5,7 @@ import AddUserModal from '../modal/AddUserModal';
 
 export default function User() {
     const name = localStorage.getItem('name');
+    const role = localStorage.getItem('role')
     const [userModal, setUserModal] = useState(false);
     const [refreshUsers, setRefreshUsers] = useState(false);
 
@@ -19,7 +20,7 @@ export default function User() {
 
     return (
         <div>
-            <Navbar name={name} />
+            <Navbar name={name}  role={role}/>
             <div style={{ padding: '40px' }}>
                 <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'flex-end', paddingRight: '20px' }}>
                     <button

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 
 
-export default function Navbar({ name }) {
+export default function Navbar({ name, role }) {
 
     const navigate = useNavigate();
     const [toggleIcon, setToggleIcon] = useState(false)
@@ -60,7 +60,7 @@ export default function Navbar({ name }) {
                                 >
                                     Task
                                 </NavLink>
-                                <NavLink
+                              { role==='Admin' && <NavLink
                                     to="/user"
                                     className={({ isActive }) =>
                                         `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -69,6 +69,7 @@ export default function Navbar({ name }) {
                                 >
                                     User
                                 </NavLink>
+}
                             </div>
                         </div>
                     </div>
@@ -121,7 +122,7 @@ export default function Navbar({ name }) {
                     >
                         Task
                     </NavLink>
-                    <NavLink
+                   { role==='Admin'   &&  <NavLink
                         to="/user"
                         className={({ isActive }) =>
                             `block rounded-md  px-3 py-2  text-base font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -129,6 +130,7 @@ export default function Navbar({ name }) {
                     >
                         User
                     </NavLink>
+                        }
                 </div>
             </div>
         </nav>

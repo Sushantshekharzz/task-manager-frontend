@@ -6,7 +6,7 @@ import { getTask, updateTask, deleteTaskAPI } from '../util/api';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import EditTaskModal from '../modal/EditTaskModal';
 
-const Task = ({ task, index, moveTask, category, openEditModal, deleteTask }) => {
+const Task = ({ task, index, moveTask, category, openEditModal, deleteTask , role }) => {
   const [{ isDragging }, drag] = useDrag({
     type: 'TASK',
     item: { task, index, category },
@@ -39,7 +39,7 @@ const Task = ({ task, index, moveTask, category, openEditModal, deleteTask }) =>
             {task.title}
           </p>
         </div>
-        <div className="flex space-x-2">
+       {role==='Admin' && <div className="flex space-x-2">
           <FaEdit
             className="cursor-pointer text-blue-500 hover:text-blue-700"
             onClick={() => openEditModal(task)}
@@ -49,6 +49,7 @@ const Task = ({ task, index, moveTask, category, openEditModal, deleteTask }) =>
             onClick={() => deleteTask(task.id, category)} 
           />
         </div>
+       }
       </div>
 
       <div className="mt-2">
@@ -89,7 +90,7 @@ const Task = ({ task, index, moveTask, category, openEditModal, deleteTask }) =>
   );
 };
 
-const Column = ({ category, tasks, moveTask, openEditModal, deleteTask }) => {
+const Column = ({ category, tasks, moveTask, openEditModal, deleteTask , role}) => {
   const [, drop] = useDrop({
     accept: 'TASK',
     drop: (item) => {
@@ -114,6 +115,7 @@ const Column = ({ category, tasks, moveTask, openEditModal, deleteTask }) => {
           tasks.map((task, index) => (
             <Task
               key={task.id}
+              role={role}
               task={task}
               index={index}
               moveTask={moveTask}
@@ -128,7 +130,7 @@ const Column = ({ category, tasks, moveTask, openEditModal, deleteTask }) => {
   );
 };
 
-const TaskBoard = ({ addTask }) => {
+const TaskBoard = ({ addTask, role }) => {
   const [tasks, setTasks] = useState({
     Todo: [],
     InProgress: [],
@@ -163,8 +165,15 @@ const TaskBoard = ({ addTask }) => {
   };
 
   useEffect(() => {
+    // Fetch tasks when the component is mounted
     getTaskData();
-  }, [addTask]);
+  }, []);  // Empty dependency array ensures it runs once when the component mounts
+
+  useEffect(() => {
+    if (addTask !== undefined) {
+      getTaskData(); // Refresh tasks when addTask changes
+    }
+  }, [addTask]); // Re-fetch tasks if a new task is added
 
   const moveTask = async (index, fromCategory, toCategory) => {
     const originalTasks = { ...tasks };
@@ -224,10 +233,10 @@ const TaskBoard = ({ addTask }) => {
         Authorization: `Bearer ${token}`,
       };
 
-      const response = await deleteTaskAPI(taskId, headers); 
+      const response = await deleteTaskAPI(taskId, headers);
 
       if (response.status !== 200) {
-        setTasks(originalTasks); 
+        setTasks(originalTasks);
       }
     } catch (error) {
       console.error('Error deleting task:', error);
@@ -256,6 +265,7 @@ const TaskBoard = ({ addTask }) => {
             moveTask={moveTask}
             openEditModal={openEditModal}
             deleteTask={deleteTask}
+            role={role}
           />
         ))}
       </div>

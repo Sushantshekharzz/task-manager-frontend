@@ -228,7 +228,7 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
                                     >
                                         <option value="" disabled>Select a user</option>
                                         {userData && userData.map((value, index) => (
-                                            <option key={index} value={value.name}>{value.name}</option>
+                                            <option key={index} value={value.userName}>{value.userName}</option>
                                         ))}
                                     </select>
                                     {errors.assignedUsers && <span className="text-sm text-red-500">{errors.assignedUsers}</span>}

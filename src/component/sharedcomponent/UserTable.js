@@ -7,6 +7,7 @@ import DeleteIcon from './DeleteIcon';
 import { deleteUser } from '../util/api';
 import Alert from './Alert';
 import EditUserModal from '../modal/EditUserModal';
+
 export default function UserTable({ refreshUsers }) {
 
     const [loading, setLoading] = useState(false);
@@ -43,10 +44,6 @@ export default function UserTable({ refreshUsers }) {
             setLoading(false);
         }
     }
-
-    useEffect(() => {
-        fetchUser()
-    }, [])
 
     const toggleEdit = (id) => {
         setSelectedUserId(id)
@@ -85,48 +82,43 @@ export default function UserTable({ refreshUsers }) {
                 </div>
             )}
             {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />}
-            <table className="table-auto w-full border-collapse border border-gray-200 ">
-                <thead>
-                    <tr className="bg-gray-800 ">
-                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Name</th>
-                        <th className="border border-gray-300 px-4 py-2 text-center text-white">User Name</th>
-                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Role</th>
-                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Created At</th>
-                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Updated At</th>
-                        <th className="border border-gray-300 px-4 py-2 text-center text-white">Update</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map((user, index) => (
-                        <tr key={index}>
-                            <td className="border border-gray-300  text-center px-4 py-2">{user.name}</td>
-                            <td className="border border-gray-300 text-center px-4 py-2">{user.userName}</td>
-                            <td className="border border-gray-300 text-center px-4 py-2">{user.role}</td>
-                            <td className="border border-gray-300 text-center px-4 py-2">
-                                {new Date(user.createdAt).toLocaleDateString()}
-                            </td>
-                            <td className="border border-gray-300 text-center px-4 py-2">
-                                {new Date(user.updatedAt).toLocaleDateString()}
-                            </td>
-                            <td className="border border-gray-300 text-center px-4 py-2">
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div>
+            
+            <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse border border-gray-200">
+                    <thead className="bg-gray-800">
+                        <tr>
+                            <th className="border border-gray-300 px-2 py-2 text-center text-white text-xs sm:text-sm md:text-base">Name</th>
+                            <th className="border border-gray-300 px-2 py-2 text-center text-white text-xs sm:text-sm md:text-base">User Name</th>
+                            <th className="border border-gray-300 px-2 py-2 text-center text-white text-xs sm:text-sm md:text-base">Role</th>
+                            <th className="border border-gray-300 px-2 py-2 text-center text-white text-xs sm:text-sm md:text-base">Created At</th>
+                            <th className="border border-gray-300 px-2 py-2 text-center text-white text-xs sm:text-sm md:text-base">Updated At</th>
+                            <th className="border border-gray-300 px-2 py-2 text-center text-white text-xs sm:text-sm md:text-base">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map((user, index) => (
+                            <tr key={index} className="hover:bg-gray-100">
+                                <td className="border border-gray-300 text-center px-2 py-2 text-sm sm:text-base">{user.name}</td>
+                                <td className="border border-gray-300 text-center px-2 py-2 text-sm sm:text-base">{user.userName}</td>
+                                <td className="border border-gray-300 text-center px-2 py-2 text-sm sm:text-base">{user.role}</td>
+                                <td className="border border-gray-300 text-center px-2 py-2 text-sm sm:text-base">{new Date(user.createdAt).toLocaleDateString()}</td>
+                                <td className="border border-gray-300 text-center px-2 py-2 text-sm sm:text-base">{new Date(user.updatedAt).toLocaleDateString()}</td>
+                                <td className="border border-gray-300 text-center px-2 py-2 text-sm sm:text-base">
+                                    <div className="flex justify-center gap-2">
                                         <button onClick={() => toggleEdit(user.id)}>
                                             <EditIcon />
                                         </button>
-                                    </div>
-                                    <div style={{ marginLeft: '10px' }}>
                                         <button onClick={() => deleteUserFucn(user.id)}>
                                             <DeleteIcon />
                                         </button>
                                     </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
             {editUserModal && <EditUserModal toggleEdit={toggleEdit} editUserModal={editUserModal} selectedUserId={selectedUserId} updatedUser={updatedUser} />}
         </div>
     );

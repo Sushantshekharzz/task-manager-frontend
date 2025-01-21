@@ -90,7 +90,7 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
             <div id="static-modal" data-modal-backdrop="static" tabIndex="-1" aria-hidden="true" className={`fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black/50 transition-opacity ${editUserModal ? "visible opacity-100" : "invisible opacity-0"
                 }`}
             >
-                {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} {/* Pass setAlert to allow dismiss */}
+                {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />}
                 {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-800 z-50">
                         <Loader />

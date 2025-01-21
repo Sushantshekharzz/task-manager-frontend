@@ -47,13 +47,15 @@ export default function Signin() {
                     localStorage.setItem('name', response.data.name)
                     setAlertMessage(response.data.message)
                     setStatuscode(response.status)
-                    navigate("/task");
-
-
-
+                    if (response.data.role === 'Admin') {
+                        navigate("/task");
+                    }
+                    else {
+                        navigate("/userassigntask");
+                    }
                 }
             } catch (error) {
-                console.log("error",error)
+                console.log("error", error)
                 setAlert(true)
 
                 setStatuscode(error.response.status)
