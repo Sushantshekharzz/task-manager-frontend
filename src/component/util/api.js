@@ -7,7 +7,9 @@ const addAdmin = async (data) => {
 }
 
 const signIn = async (data) => {
-    const response = await axios.post(`${process.env.REACT_APP_URL}/signin`, data)
+    const response = await axios.post(`${process.env.REACT_APP_URL}/signin`, data,
+        { withCredentials: true }
+    )
     return response
 }
 
