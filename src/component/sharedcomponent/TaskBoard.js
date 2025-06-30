@@ -141,7 +141,6 @@ const TaskBoard = ({ addTask, role }) => {
   const [taskToEdit, setTaskToEdit] = useState(null);
 
   const getTaskData = async () => {
-    const token = localStorage.getItem('token');
     
 
     try {
@@ -205,7 +204,6 @@ const TaskBoard = ({ addTask, role }) => {
     });
 
     try {
-      const token = localStorage.getItem('token');
      
 
       const data = {
@@ -239,7 +237,6 @@ const TaskBoard = ({ addTask, role }) => {
     });
 
     try {
-      const token = localStorage.getItem('token');
  
 
       const response = await deleteTaskAPI(taskId);

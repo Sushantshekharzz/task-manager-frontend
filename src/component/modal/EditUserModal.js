@@ -26,7 +26,6 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const token = localStorage.getItem('token')
            
             try {
                 setLoading(true)
@@ -55,7 +54,6 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
                 userName: username.toLocaleLowerCase(),
                 name: name
             }
-            const token = localStorage.getItem('token')
             
             try {
                 setLoading(true)

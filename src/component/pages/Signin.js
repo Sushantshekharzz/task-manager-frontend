@@ -42,9 +42,6 @@ export default function Signin() {
                     setAlert(true)
                     setPassword('')
                     setUsername('')
-                    localStorage.setItem('token', response.data.token)
-                    localStorage.setItem('role', response.data.role)
-                    localStorage.setItem('name', response.data.name)
                     setAlertMessage(response.data.message)
                     setStatuscode(response.status)
                     if (response.data.role === 'Admin') {

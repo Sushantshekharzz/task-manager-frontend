@@ -63,7 +63,6 @@ export default function AddUserModal({ toggleModal, userModal, handleUserAdded }
                 name: name
             }
 
-            const token  = localStorage.getItem('token')
           
             try {
                 setLoading(true)

@@ -27,7 +27,6 @@ export default function UserTable({ refreshUsers }) {
     }
 
     const fetchUser = async () => {
-        const token = localStorage.getItem('token')
 
         try {
             setLoading(true)
@@ -49,7 +48,6 @@ export default function UserTable({ refreshUsers }) {
     }
 
     const deleteUserFucn = async (id) => {
-        const token = localStorage.getItem('token')
 
         try {
             setLoading(true)

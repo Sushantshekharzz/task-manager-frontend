@@ -23,7 +23,6 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
     const [errors, setErrors] = useState({});
 
     const fetchUser = async () => {
-        const token = localStorage.getItem('token');
         
         try {
             setLoading(true);
@@ -75,7 +74,6 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
         e.preventDefault();
         if (!validateForm()) return;
 
-        const token = localStorage.getItem('token');
         
 
         try {

@@ -23,7 +23,6 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
     const [errors, setErrors] = useState({});
 
     const fetchUser = async () => {
-        const token = localStorage.getItem('token');
        
         try {
             setLoading(true);
@@ -40,7 +39,6 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
 
     useEffect(() => {
         const fetchTask = async () => {
-            const token = localStorage.getItem('token');
             
             try {
                 setLoading(true);
@@ -97,7 +95,6 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
         e.preventDefault();
         if (!validateForm()) return;
 
-        const token = localStorage.getItem('token');
        
 
         try {
