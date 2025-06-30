@@ -2,6 +2,7 @@ import axios from "axios"
 
 
 const addAdmin = async (data) => {
+    console.log("data",data)
     const response = await axios.post(`${process.env.REACT_APP_URL}/signup`, data)
     return response
 }
