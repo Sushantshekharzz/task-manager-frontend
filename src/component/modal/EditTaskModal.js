@@ -24,12 +24,10 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
 
     const fetchUser = async () => {
         const token = localStorage.getItem('token');
-        const headers = {
-            'Authorization': `Bearer ${token}`
-        };
+       
         try {
             setLoading(true);
-            const response = await getAllUser(headers);
+            const response = await getAllUser();
             if (response.status === 200) {
                 setUserData(response.data);
             }
@@ -43,12 +41,10 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
     useEffect(() => {
         const fetchTask = async () => {
             const token = localStorage.getItem('token');
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
+            
             try {
                 setLoading(true);
-                const response = await getTaskById(taskId, headers);
+                const response = await getTaskById(taskId);
                 if (response.status === 200) {
                     const task = response.data;
                     const formattedDueDate = task.dueDate
@@ -102,13 +98,11 @@ export default function EditTaskModal({ editTaskToggle, editTask, toRefresh, tas
         if (!validateForm()) return;
 
         const token = localStorage.getItem('token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+       
 
         try {
             setLoading(true);
-            const response = await updateTask(taskId, taskData, headers);
+            const response = await updateTask(taskId, taskData);
             if (response.status === 200) {
                 setAlertMessage(response.data.message);
                 setAlert(true);

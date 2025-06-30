@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
+import { signOut } from '../util/api';
+import Alert from './Alert';
 
 
 export default function Navbar({ name, role }) {
@@ -8,14 +10,36 @@ export default function Navbar({ name, role }) {
     const navigate = useNavigate();
     const [toggleIcon, setToggleIcon] = useState(false)
     const [toggleMenu, setToggleMenu] = useState(false);
-    
+    const [alert, setAlert] = useState('')
+    const [alertMessage, setAlertMessage] = useState('');
+    const [statusCode, setStatuscode] = useState();
+
+
+
+
     const nameDisplay = name
     const firstLetter = name.charAt(0).toUpperCase();
 
-    const handleSignOut = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        navigate('/');
+    const handleSignOut = async () => {
+        try {
+            const response = await signOut()
+            console.log("wwww",response)
+            if (response.status === 200) {
+                navigate('/');
+
+                setAlert(true)
+                setAlertMessage(response.data.message)
+                setStatuscode(response.status)
+            }
+
+        } catch (error) {
+            setAlert(true)
+            setStatuscode(error.response.status)
+            setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
+
+        }
+
+     
     }
 
     const toggleIconFunc = () => {
@@ -26,12 +50,14 @@ export default function Navbar({ name, role }) {
     };
     return (
         <nav className="bg-gray-800">
+                        {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />}
+            
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                         <button type="button" className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu"
                             aria-expanded={toggleMenu ? 'true' : 'false'}
-                            onClick={toggleMenuFunc} 
+                            onClick={toggleMenuFunc}
                         >
                             <span className="absolute -inset-0.5"></span>
                             <span className="sr-only">Open main menu</span>
@@ -50,7 +76,7 @@ export default function Navbar({ name, role }) {
                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
-                            { role==='Admin' &&     <NavLink
+                                {role === 'Admin' && <NavLink
                                     to="/task"
                                     className={({ isActive }) =>
                                         `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -60,8 +86,8 @@ export default function Navbar({ name, role }) {
                                 >
                                     Task
                                 </NavLink>
-}
-                              { role==='Admin' && <NavLink
+                                }
+                                {role === 'Admin' && <NavLink
                                     to="/user"
                                     className={({ isActive }) =>
                                         `rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -70,7 +96,7 @@ export default function Navbar({ name, role }) {
                                 >
                                     User
                                 </NavLink>
-}
+                                }
                             </div>
                         </div>
                     </div>
@@ -115,7 +141,7 @@ export default function Navbar({ name, role }) {
             <div
                 className={`sm:hidden ${toggleMenu ? 'block' : 'hidden'}`} id="mobile-menu">
                 <div className="space-y-1 px-2 pb-3 pt-2">
-                { role==='Admin' &&     <NavLink
+                    {role === 'Admin' && <NavLink
                         to="/task"
                         className={({ isActive }) =>
                             `block rounded-md   px-3 py-2 text-base font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -123,8 +149,8 @@ export default function Navbar({ name, role }) {
                     >
                         Task
                     </NavLink>
-}
-                   { role==='Admin'   &&  <NavLink
+                    }
+                    {role === 'Admin' && <NavLink
                         to="/user"
                         className={({ isActive }) =>
                             `block rounded-md  px-3 py-2  text-base font-medium ${isActive ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
@@ -132,7 +158,7 @@ export default function Navbar({ name, role }) {
                     >
                         User
                     </NavLink>
-                        }
+                    }
                 </div>
             </div>
         </nav>

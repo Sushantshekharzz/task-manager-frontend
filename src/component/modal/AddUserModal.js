@@ -64,12 +64,10 @@ export default function AddUserModal({ toggleModal, userModal, handleUserAdded }
             }
 
             const token  = localStorage.getItem('token')
-            const headers  = {
-                'Authorization': `$Bearer ${token}`
-            }
+          
             try {
                 setLoading(true)
-                const response =await postUser(data,headers)
+                const response =await postUser(data)
                 if (response.status === 200) {
                     setPassword('')
                     setUsername('')

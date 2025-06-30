@@ -28,12 +28,10 @@ export default function UserTable({ refreshUsers }) {
 
     const fetchUser = async () => {
         const token = localStorage.getItem('token')
-        const headers = {
-            'Authorization': `$Bearer ${token}`
-        }
+
         try {
             setLoading(true)
-            const response = await getAllUser(headers)
+            const response = await getAllUser()
             if (response.status === 200) {
                 setData(response.data)
             }
@@ -52,12 +50,10 @@ export default function UserTable({ refreshUsers }) {
 
     const deleteUserFucn = async (id) => {
         const token = localStorage.getItem('token')
-        const headers = {
-            'Authorization': `$Bearer ${token}`
-        }
+
         try {
             setLoading(true)
-            const response = await deleteUser(id, headers)
+            const response = await deleteUser(id)
             if (response.status === 200) {
                 setAlert(true)
                 setAlertMessage(response.data.message)

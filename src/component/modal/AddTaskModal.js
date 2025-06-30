@@ -24,12 +24,10 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
 
     const fetchUser = async () => {
         const token = localStorage.getItem('token');
-        const headers = {
-            'Authorization': `Bearer ${token}`
-        };
+        
         try {
             setLoading(true);
-            const response = await getAllUser(headers);
+            const response = await getAllUser();
             if (response.status === 200) {
                 setUserData(response.data);
 
@@ -78,13 +76,11 @@ export default function AddTaskModal({ addTaskToggle, addTask, toRefresh }) {
         if (!validateForm()) return;
 
         const token = localStorage.getItem('token');
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
+        
 
         try {
             setLoading(true);
-            const response = await postTask(taskData, headers);
+            const response = await postTask(taskData);
             if (response.status === 200) {
                 setAlertMessage(response.data.message);
                 setAlert(true);

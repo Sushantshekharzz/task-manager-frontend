@@ -142,12 +142,10 @@ const TaskBoard = ({ addTask, role }) => {
 
   const getTaskData = async () => {
     const token = localStorage.getItem('token');
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
+    
 
     try {
-      const response = await getTask(headers);
+      const response = await getTask();
       if (response.status === 200) {
         const fetchedTasks = response.data;
 
@@ -208,10 +206,7 @@ const TaskBoard = ({ addTask, role }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      };
+     
 
       const data = {
         status: movedTask.status,
@@ -222,7 +217,7 @@ const TaskBoard = ({ addTask, role }) => {
         title: movedTask.title,
       };
 
-      const response = await updateTask(movedTask.id, data, headers);
+      const response = await updateTask(movedTask.id, data);
 
       if (response.status !== 200) {
         setTasks(originalTasks);
@@ -245,11 +240,9 @@ const TaskBoard = ({ addTask, role }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+ 
 
-      const response = await deleteTaskAPI(taskId, headers);
+      const response = await deleteTaskAPI(taskId);
 
       if (response.status !== 200) {
         setTasks(originalTasks);

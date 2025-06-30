@@ -27,12 +27,10 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('token')
-            const headers = {
-                'Authorization': `$Bearer ${token}`
-            }
+           
             try {
                 setLoading(true)
-                const response = await getUser(selectedUserId, headers)
+                const response = await getUser(selectedUserId)
     
                 if (response.status === 200) {
                     setName(response.data[0].name)
@@ -58,12 +56,10 @@ export default function EditUserModal({ toggleEdit, editUserModal, selectedUserI
                 name: name
             }
             const token = localStorage.getItem('token')
-            const headers = {
-                'Authorization': `$Bearer ${token}`
-            }
+            
             try {
                 setLoading(true)
-                const response = await updateUser(selectedUserId, data, headers)
+                const response = await updateUser(selectedUserId, data)
                 if (response.status === 200) {
                     setAlertMessage(response.data.message)
                     setAlert(true)
