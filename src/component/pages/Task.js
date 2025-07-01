@@ -2,11 +2,15 @@ import React, { useState } from 'react'
 import Navbar from '../sharedcomponent/Navbar'
 import TaskBoard from '../sharedcomponent/TaskBoard'
 import AddTaskModal from '../modal/AddTaskModal'
+import { useContext } from 'react'
+import { UserContext } from '../sharedcomponent/UserContext'
 
 export default function Task() {
-    const name = localStorage.getItem('name')
-    const role  =  localStorage.getItem('role')
+ 
     const [addTask, setAddTask] = useState(false);
+    const { user } = useContext(UserContext);
+    const name = user?.name;
+    const role = user?.role;
 
     const addTaskToggle  = () =>{
         setAddTask((prev)=>!prev)

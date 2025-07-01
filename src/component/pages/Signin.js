@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import Loader from '../sharedcomponent/Loader';
 import Alert from '../sharedcomponent/Alert';
 import { signIn } from '../util/api';
+import { UserContext } from '../sharedcomponent/UserContext';
+import { useContext } from 'react';
 export default function Signin() {
 
     const navigate = useNavigate()
+    const { refetchUser } = useContext(UserContext);
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -39,6 +42,10 @@ export default function Signin() {
                 setLoading(true)
                 const response = await signIn(data)
                 if (response.status === 200) {
+                    console.log("📣 calling refetchUser()");
+await refetchUser();
+console.log("✅ refetchUser called");
+
                     setAlert(true)
                     setPassword('')
                     setUsername('')

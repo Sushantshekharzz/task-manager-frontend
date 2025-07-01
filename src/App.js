@@ -8,10 +8,12 @@ import User from './component/pages/User';
 import Notfound from "./component/pages/NotFound"
 import Task from './component/pages/Task';
 import UserAssignTask from './component/pages/UserAssignTask';
+import { UserProvider } from './component/sharedcomponent/UserContext';
 
 
 function App() {
   return (
+    <UserProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Signin />} />
@@ -23,6 +25,7 @@ function App() {
         <Route path="*" element={<Notfound />} />
       </Routes>
     </Router>
+    </UserProvider>
   );
 }
 

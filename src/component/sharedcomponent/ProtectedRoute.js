@@ -1,34 +1,15 @@
-import React, { useEffect, useState } from 'react';
+// src/component/sharedcomponent/ProtectedRoute.jsx
+import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import { UserContext } from './UserContext';
 
 export default function ProtectedRoute({ role, element }) {
-  const [authorized, setAuthorized] = useState(null); // null = loading
+  const { user, loading } = useContext(UserContext);
 
-  useEffect(() => {
-    const verifyToken = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_URL}/auth/verify`, {
-          withCredentials: true, // ✅ Send cookies
-        });
 
-        // Check if the role matches
-        if (response.data.role === role) {
-          setAuthorized(true);
-        } else {
-          setAuthorized(false);
-        }
-      } catch (error) {
-        setAuthorized(false); // Invalid or missing token
-      }
-    };
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/signin" />;
+  if (role && user.role !== role) return <Navigate to="/unauthorized" />;
 
-    verifyToken();
-  }, [role]);
-
-  if (authorized === null) {
-    return <div>Loading...</div>; // Or show a spinner
-  }
-
-  return authorized ? element : <Navigate to="/unauthorized" />;
+  return element;
 }
