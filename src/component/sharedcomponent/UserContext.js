@@ -1,13 +1,13 @@
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false); // not true initially
+  const [loading, setLoading] = useState(true); // not true initially
 
-  const fetchUser = useCallback(async () => {
+  const fetchUser = async () => {
     try {
       setLoading(true);
       console.log("process.env.REACT_APP_URL",process.env.REACT_APP_URL)
@@ -22,6 +22,9 @@ export const UserProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+  };
+   useEffect(() => {
+    fetchUser();
   }, []);
 
   return (
