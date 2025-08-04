@@ -3,7 +3,6 @@ import axiosInstance from "./axiosInstance";
 
 
 const addAdmin = async (data) => {
-    console.log("data",data)
     const response = await axiosInstance.post(`/signup`, data)
     return response
 }
