@@ -25,6 +25,8 @@ export default function Navbar({ name, role }) {
             const response = await signOut()
             console.log("wwww",response)
             if (response.status === 200) {
+                localStorage.removeItem("name");
+                localStorage.removeItem("role");
                 navigate('/');
 
                 setAlert(true)
