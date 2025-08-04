@@ -3,12 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import Loader from '../sharedcomponent/Loader';
 import Alert from '../sharedcomponent/Alert';
 import { signIn } from '../util/api';
-import { UserContext } from '../sharedcomponent/UserContext';
 import { useContext } from 'react';
 export default function Signin() {
 
     const navigate = useNavigate()
-    const { refetchUser } = useContext(UserContext);
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -42,10 +40,9 @@ export default function Signin() {
                 setLoading(true)
                 const response = await signIn(data)
                 if (response.status === 200) {
-                    console.log("📣 calling refetchUser()");
-await refetchUser();
-console.log("✅ refetchUser called");
-
+                    console.log("response", response.data)
+                    localStorage.setItem("name", response.data.name)
+                    localStorage.setItem("role", response.data.role)
                     setAlert(true)
                     setPassword('')
                     setUsername('')
@@ -78,7 +75,7 @@ console.log("✅ refetchUser called");
                     <Loader />
                 </div>
             )}
-            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />} 
+            {alert && <Alert setAlert={setAlert} message={alertMessage} statusCode={statusCode} />}
 
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">

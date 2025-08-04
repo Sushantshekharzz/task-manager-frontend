@@ -1,13 +1,11 @@
 import React from 'react'
 import Navbar from '../sharedcomponent/Navbar'
 import TaskBoard from '../sharedcomponent/TaskBoard'
-import { UserContext } from '../sharedcomponent/UserContext'
 import { useContext } from 'react'
 
 export default function UserAssignTask() {
-    const { user } = useContext(UserContext);
-    const name = user?.name;
-    const role = user?.role;
+    const name = localStorage.getItem("name");
+    const role = localStorage.getItem("role");
 
     return (
         <div>

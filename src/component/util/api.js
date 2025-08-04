@@ -1,50 +1,51 @@
 import axios from "axios"
+import axiosInstance from "./axiosInstance";
 
 
 const addAdmin = async (data) => {
     console.log("data",data)
-    const response = await axios.post(`${process.env.REACT_APP_URL}/signup`, data)
+    const response = await axiosInstance.post(`/signup`, data)
     return response
 }
 
 const signIn = async (data) => {
-    const response = await axios.post(`${process.env.REACT_APP_URL}/signin`, data,{ withCredentials: true }
-    )
+    const response = await axiosInstance.post(`/signin`, data)
+    
     return response
 }
 
 const postUser = async (data) => {
-    const response = await axios.post(`${process.env.REACT_APP_URL}/users`, data,  { withCredentials: true }
-)
+    const response = await axiosInstance.post(`/users`, data)
+
     return response
 }
 
 const getAllUser = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_URL}/users`, { withCredentials: true })
+    const response = await axiosInstance.get(`/users`)
     return response
 }
 
 const deleteUser = async (id) => {
-    const response = await axios.delete(`${process.env.REACT_APP_URL}/users/${id}`, { withCredentials: true })
+    const response = await axiosInstance.delete(`/users/${id}`)
     return response
 }
 
 const getUser = async (id) => {
-    const response = await axios.get(`${process.env.REACT_APP_URL}/users/${id}`,{ withCredentials: true })
+    const response = await axiosInstance.get(`/users/${id}`)
     return response
 }
 
 const updateUser = async (id, data) => {
-    const response = await axios.put(`${process.env.REACT_APP_URL}/users/${id}`, data,{ withCredentials: true })
+    const response = await axiosInstance.put(`/users/${id}`, data)
     return response
 }
 
 const postTask  = async(data) => {
-    const response = await axios.post(`${process.env.REACT_APP_URL}/tasks`, data,{ withCredentials: true })
+    const response = await axiosInstance.post(`/tasks`, data)
     return response
 }
 const getTask  = async( ) => {
-    const response = await axios.get(`${process.env.REACT_APP_URL}/tasks`, { withCredentials: true })
+    const response = await axiosInstance.get(`/tasks`)
     return response
 }
 const updateTask  = async (id, data) =>{  
@@ -53,21 +54,26 @@ const updateTask  = async (id, data) =>{
 
 }
 const getTaskById  = async (id) =>{  
-    const response = await axios.get(`${process.env.REACT_APP_URL}/tasks/${id}`, { withCredentials: true })
+    const response = await axiosInstance.get(`/tasks/${id}`)
     return response
 
 }
 
 const deleteTaskAPI  = async (id) =>{  
-    const response = await axios.delete(`${process.env.REACT_APP_URL}/tasks/${id}`, { withCredentials: true })
+    const response = await axiosInstance.delete(`/tasks/${id}`)
     return response
 
 }
 const signOut  = async()=>{
-     const response  =    await axios.post(`${process.env.REACT_APP_URL}/signout`,{}, {
-      withCredentials: true
-    });
+     const response  =    await axiosInstance.post(`/signout`,{});
     return response
 }
 
-export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI, signOut}
+const getUserInfo  = async () =>{
+    const response  =    await axiosInstance.get("/auth/verify");
+    return response
+}
+
+
+
+export {getUserInfo, addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI, signOut}
