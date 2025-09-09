@@ -68,11 +68,7 @@ const signOut  = async()=>{
     return response
 }
 
-const getUserInfo  = async () =>{
-    const response  =    await axiosInstance.get("/auth/verify");
-    return response
-}
 
 
 
-export {getUserInfo, addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI, signOut}
+export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI, signOut}
