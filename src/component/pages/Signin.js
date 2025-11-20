@@ -31,47 +31,47 @@ export default function Signin() {
         }
     };
 
-    const signin = async (e) => {
-        e.preventDefault()
-        if (!emailError) {
-            const data = {
-                userName: username.toLowerCase(),
-                passWord: password,
-
-            }
-            try {
-                setLoading(true)
-                const response = await signIn(data)
-                if (response.status === 200) {
-                    console.log("response", response.data)
-                    setAlert(true)
-                    setPassword('')
-                    setUsername('')
-                    setAlertMessage(response.data.message)
-                    setStatuscode(response.status)
-                    setUser(response.data.user)
-                    console.log("response",response)
-                    // console.log("eeee",response.)
-                    if (response.data.user.role === 'Admin') {
-                        console.log("Entering")
-                        navigate("/task");
-                    }
-                    else {
-                        navigate("/userassigntask");
-                    }
-                }
-            } catch (error) {
-                console.log("error", error)
+const signin = async (e) => {
+    e.preventDefault()
+    if (!emailError) {
+        const data = {
+            userName: username.toLowerCase(),
+            passWord: password,
+        }
+        try {
+            setLoading(true)
+            const response = await signIn(data)
+            if (response.status === 200) {
+                console.log("response", response.data)
                 setAlert(true)
+                setPassword('')
+                setUsername('')
+                setAlertMessage(response.data.message)
+                setStatuscode(response.status)
 
-                setStatuscode(error.response.status)
-                setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
+                // Store access token in memory
+                window.accessToken = response.data.accessToken;
+
+                // Set user in context
+                setUser(response.data.user)
+                
+                if (response.data.user.role === 'Admin') {
+                    navigate("/task");
+                } else {
+                    navigate("/userassigntask");
+                }
             }
-            finally {
-                setLoading(false);
-            }
+        } catch (error) {
+            console.log("error", error)
+            setAlert(true)
+            setStatuscode(error.response?.status || 500)
+            setAlertMessage(error.response?.data?.message || 'Something went wrong!')
+        } finally {
+            setLoading(false);
         }
     }
+}
+
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

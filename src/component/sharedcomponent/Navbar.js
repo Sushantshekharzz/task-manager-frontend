@@ -20,26 +20,29 @@ export default function Navbar({ name, role }) {
     const nameDisplay = name
     const firstLetter = name.charAt(0).toUpperCase();
 
-    const handleSignOut = async () => {
-        try {
-            const response = await signOut()
-            if (response.status === 200) {
-                navigate('/');
+const handleSignOut = async () => {
+  try {
+    const response = await signOut(); // optional: backend can clear refresh token cookie
+    if (response.status === 200) {
+      // Clear memory-only access token
+      window.accessToken = null;
+      // Clear user from context
 
-                setAlert(true)
-                setAlertMessage(response.data.message)
-                setStatuscode(response.status)
-            }
+      // Navigate to login/home page
+      navigate('/');
 
-        } catch (error) {
-            setAlert(true)
-            setStatuscode(error.response.status)
-            setAlertMessage(error.response ? error.response.data.message : 'Something went wrong!')
-
-        }
-
-     
+      // Show alert
+      setAlert(true);
+      setAlertMessage(response.data.message);
+      setStatuscode(response.status);
     }
+  } catch (error) {
+    setAlert(true);
+    setStatuscode(error.response?.status || 500);
+    setAlertMessage(error.response?.data?.message || 'Something went wrong!');
+  }
+};
+
 
     const toggleIconFunc = () => {
         setToggleIcon((prev) => !prev)

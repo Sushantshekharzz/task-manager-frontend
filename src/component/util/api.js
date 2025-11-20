@@ -48,7 +48,7 @@ const getTask  = async( ) => {
     return response
 }
 const updateTask  = async (id, data) =>{  
-    const response = await axios.put(`${process.env.REACT_APP_URL}/tasks/${id}`,data, { withCredentials: true })
+    const response = await axiosInstance.put(`${process.env.REACT_APP_URL}/tasks/${id}`,data, { withCredentials: true })
     return response
 
 }

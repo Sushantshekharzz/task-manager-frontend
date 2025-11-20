@@ -2,23 +2,30 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_URL,
-  withCredentials: true, // ✅ Important: allow cookies to be sent
+  withCredentials: true, // allow cookies
 });
 
 // Refresh logic
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error) => {
+const processQueue = (error, token = null) => {
   failedQueue.forEach(p => {
     if (error) {
       p.reject(error);
     } else {
-      p.resolve();
+      p.resolve(token);
     }
   });
   failedQueue = [];
 };
+
+// Attach access token from memory to headers
+axiosInstance.interceptors.request.use(config => {
+  const token = window.accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 axiosInstance.interceptors.response.use(
   res => res,
@@ -31,8 +38,11 @@ axiosInstance.interceptors.response.use(
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({
-            resolve: () => resolve(axiosInstance(originalRequest)),
-            reject: (error) => reject(error),
+            resolve: (token) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              resolve(axiosInstance(originalRequest));
+            },
+            reject,
           });
         });
       }
@@ -40,11 +50,18 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axios.post(`${process.env.REACT_APP_URL}/auth/refresh`, {}, { withCredentials: true });
-        processQueue(null);
+        const response = await axios.post(`${process.env.REACT_APP_URL}/auth/refresh`, {}, { withCredentials: true });
+        
+        // store new access token in memory
+        window.accessToken = response.data.accessToken;
+
+        processQueue(null, window.accessToken);
+
+        // retry original request with new token
+        originalRequest.headers.Authorization = `Bearer ${window.accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshErr) {
-        processQueue(refreshErr);
+        processQueue(refreshErr, null);
         window.location.href = '/';
         return Promise.reject(refreshErr);
       } finally {

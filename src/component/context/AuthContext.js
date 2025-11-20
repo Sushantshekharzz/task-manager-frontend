@@ -12,34 +12,32 @@ export const AuthProvider = ({ children }) => {
 
 
 useEffect(() => {
-    // List of protected routes
-    const protectedRoutes = ["/task", "/user", "/userassigntask", ""];
-    const currentPath = window.location.pathname.toLowerCase();
+  const protectedRoutes = ["/task", "/user", "/userassigntask"];
+  const currentPath = window.location.pathname.toLowerCase();
 
-    if (!protectedRoutes.includes(currentPath)) {
-      // Public route → skip refreshToken
+  if (!protectedRoutes.includes(currentPath)) {
+    setLoading(false);
+    return;
+  }
+
+  const loadUser = async () => {
+    try {
+      const res = await refreshToken(); // should return accessToken + user
+      window.accessToken = res.data.accessToken; // store in memory
+      setUser(res.data.user);
+    } catch (err) {
+      window.accessToken = null;
+      setUser(null);
+      navigate("/"); 
+      console.error("User not authenticated", err);
+    } finally {
       setLoading(false);
-      return;
     }
+  };
 
-    const loadUser = async () => {
-      try {
-        const res = await refreshToken();
-        console.log("rrr",res)
-        setUser(res.data.user);
-        console.log("rrrr",res)
-      } catch (err) {
-        setUser(null);
-        navigate("/"); // immediately redirect if not authenticated
+  loadUser();
+}, [navigate]);
 
-        console.error("User not authenticated", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUser();
-  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
