@@ -3,12 +3,17 @@ import Navbar from '../sharedcomponent/Navbar'
 import TaskBoard from '../sharedcomponent/TaskBoard'
 import AddTaskModal from '../modal/AddTaskModal'
 import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext'
 
 export default function Task() {
+
+    const { user, setUser } = useContext(AuthContext);
  
     const [addTask, setAddTask] = useState(false);
-    const name = localStorage.getItem("name");
-    const role = localStorage.getItem("role");
+    const name = user.name;
+    console.log("name",name)
+    const role = user.role;
+        console.log("role",role)
 
     const addTaskToggle  = () =>{
         setAddTask((prev)=>!prev)

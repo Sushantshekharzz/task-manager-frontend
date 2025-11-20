@@ -3,12 +3,14 @@ import Navbar from '../sharedcomponent/Navbar';
 import UserTable from '../sharedcomponent/UserTable';
 import AddUserModal from '../modal/AddUserModal';
 import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 export default function User() {
     const [userModal, setUserModal] = useState(false);
     const [refreshUsers, setRefreshUsers] = useState(false);
-    const name = localStorage.getItem("name");
-    const role = localStorage.getItem("role");
+    const { user, setUser } = useContext(AuthContext);
+    const name = user.name;
+    const role = user.role;
 
     const toggleUserModal = () => {
         setUserModal((prev) => !prev);

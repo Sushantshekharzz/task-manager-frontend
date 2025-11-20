@@ -1,14 +1,20 @@
-// src/component/sharedcomponent/ProtectedRoute.jsx
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 export default function ProtectedRoute({ role, element }) {
-const roleLoc  = localStorage.getItem("role")
-const user  =  localStorage.getItem("name")
+  const { user, loading } = useContext(AuthContext);
+  console.log("eee",user)
+  console.log('role',role)
 
-  // if (loading) return <div>Loading...</div>;
+  // Still loading the refreshToken → Prevent errors
+  if (loading) return <div>Loading...</div>;
+
+  // Not logged in
   if (!user) return <Navigate to="/" />;
-  if (role && roleLoc !== role) return <Navigate to="/unauthorized" />;
+
+  // Role mismatch
+  if (role && user.role !== role) return <Navigate to="/unauthorized" />;
 
   return element;
 }

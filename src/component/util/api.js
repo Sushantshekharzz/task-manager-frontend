@@ -67,8 +67,14 @@ const signOut  = async()=>{
      const response  =    await axiosInstance.post(`/signout`,{});
     return response
 }
+const refreshToken  = async () =>{
+         const response  =    await axiosInstance.post(`/auth/refresh`,{});
+         return response
+
+
+}
 
 
 
 
-export { addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI, signOut}
+export { refreshToken, addAdmin, signIn, postUser, getAllUser, deleteUser, getUser, updateUser , postTask, getTask, updateTask,getTaskById , deleteTaskAPI, signOut}

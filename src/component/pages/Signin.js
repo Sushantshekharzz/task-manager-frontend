@@ -4,7 +4,10 @@ import Loader from '../sharedcomponent/Loader';
 import Alert from '../sharedcomponent/Alert';
 import { signIn } from '../util/api';
 import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 export default function Signin() {
+
+    const { setUser } = useContext(AuthContext);
 
     const navigate = useNavigate()
 
@@ -41,14 +44,16 @@ export default function Signin() {
                 const response = await signIn(data)
                 if (response.status === 200) {
                     console.log("response", response.data)
-                    localStorage.setItem("name", response.data.name)
-                    localStorage.setItem("role", response.data.role)
                     setAlert(true)
                     setPassword('')
                     setUsername('')
                     setAlertMessage(response.data.message)
                     setStatuscode(response.status)
-                    if (response.data.role === 'Admin') {
+                    setUser(response.data.user)
+                    console.log("response",response)
+                    // console.log("eeee",response.)
+                    if (response.data.user.role === 'Admin') {
+                        console.log("Entering")
                         navigate("/task");
                     }
                     else {

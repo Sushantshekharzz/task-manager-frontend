@@ -8,13 +8,14 @@ import User from './component/pages/User';
 import Notfound from "./component/pages/NotFound"
 import Task from './component/pages/Task';
 import UserAssignTask from './component/pages/UserAssignTask';
-
+import { AuthProvider } from './component/context/AuthContext';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
+    <BrowserRouter>
 
-    
-    <Router>
+    <AuthProvider>
       <Routes>
         <Route path="/" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
@@ -24,7 +25,9 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<Notfound />} />
       </Routes>
-    </Router>
+    </AuthProvider>
+        </BrowserRouter>
+
   );
 }
 
