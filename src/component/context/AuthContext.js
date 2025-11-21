@@ -36,7 +36,7 @@ useEffect(() => {
   };
 
   loadUser();
-}, [navigate]);
+}, []);
 
 
   return (
